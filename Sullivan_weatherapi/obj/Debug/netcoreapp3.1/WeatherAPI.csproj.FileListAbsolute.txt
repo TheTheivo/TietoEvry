@@ -1,0 +1,16 @@
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.csproj.AssemblyReference.cache
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.AssemblyInfoInputs.cache
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.AssemblyInfo.cs
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.csproj.CoreCompileInputs.cache
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.exe
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.deps.json
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.runtimeconfig.json
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.runtimeconfig.dev.json
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.dll
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\WeatherAPI.pdb
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.dll
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.pdb
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.genruntimeconfig.cache
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\pohovor-ulohy\Sullivan_weatherapi\Sullivan_weatherapi\obj\Debug\netcoreapp3.1\WeatherAPI.csproj.CopyComplete
