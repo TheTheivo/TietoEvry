@@ -10,10 +10,25 @@ namespace Tests.IntegrationTests
         }
 
         [Test]
-        public void Test1()
+        public void GetForecastTest()
         {
             WeatherAPI.API.WeatherApi.GetForecast("London", 2).Wait();
-            var tt = 1;
+        }
+
+        public void GetRealTimeWeatherTest()
+        {
+            WeatherAPI.API.WeatherApi.GetRealTimeWeather("London").Wait(); ;
+            
+        }
+
+        public void GetAstronomyTest()
+        {
+            WeatherAPI.API.WeatherApi.GetAstronomy("London").Wait();
+        }
+
+        public void GetTimeZoneTest()
+        {
+            WeatherAPI.API.WeatherApi.GetForecast("London").Wait();
         }
     }
 }

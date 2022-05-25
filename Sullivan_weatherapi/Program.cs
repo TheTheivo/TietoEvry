@@ -17,9 +17,10 @@ namespace WeatherAPI
             int callIntervalToAllEndpoints = 0;
 #endif
             Constants.SetRunInConstants(xmlDirectory, citiesFile, callIntervalToSpecificEndpoint, callIntervalToAllEndpoints);
-            UI.OutputHandler.PresentModeSelection();
+            
             while (Constants.EndNotProgram)
             {
+                UI.OutputHandler.PresentModeSelection();
                 int mode = 0;
                 bool modeSelection = true;
                 while(modeSelection)

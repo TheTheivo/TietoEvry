@@ -15,9 +15,9 @@ namespace WeatherAPI.UI
 
         private static void CheckForExitInput(string input)
         {
-            if (input.ToLower() == "Exit")
+            if (input.ToLower() == "exit")
             {
-                Constants.EndNotProgram = true;
+                Constants.EndNotProgram = false;
                 Environment.Exit(0);
             }
         }

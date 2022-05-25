@@ -67,19 +67,22 @@ namespace WeatherAPI.DirectoryHelpers
 
         public static Location GetLatestWeatherDataFromXml()
         {
-            if (files.Count == 0)
-                throw new Exception("There are no data to read");
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
-
-            var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
-
-            //Check for file
-
+            System.Xml.Serialization.XmlSerializer writer = null;
             var fileData = new Location();
-
-            using (Stream reader = new FileStream($"{Constants.XmlDataFile},", FileMode.Open))
+            try
             {
-                fileData = (Location)writer.Deserialize(reader);
+                if (files.Count == 0)
+                    throw new Exception("There are no data to read");
+                writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
+                var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
+                using (Stream reader = new FileStream($"{Constants.XmlDataFile},", FileMode.Open))
+                {
+                    fileData = (Location)writer.Deserialize(reader);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
             return fileData;
         }

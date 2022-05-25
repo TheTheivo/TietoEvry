@@ -60,6 +60,7 @@ namespace WeatherAPI
                     int.TryParse(input, out selection);
                     if (selection != 1 && selection != 2)
                         throw new Exception();
+                    isInInputLoop = false;
                 }
                 catch (Exception e)
                 {
@@ -115,7 +116,7 @@ namespace WeatherAPI
                     try
                     {
                         int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3 || selectedMethod !=4)
+                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod !=4)
                             throw new Exception();
                         isInInputLoop = false;
                     }
@@ -160,8 +161,8 @@ namespace WeatherAPI
                         taskData = WeatherApi.GetForecast(selectedCity);
                         break;
                 }
-
-                WeatherIODataHelper.WriteWeatherDataToXML(taskData.Result);
+                data = taskData.GetAwaiter().GetResult();
+                WeatherIODataHelper.WriteWeatherDataToXML(data);
             }
         }
 
@@ -188,7 +189,7 @@ namespace WeatherAPI
                     try
                     {
                         int.TryParse(input, out selectedMethod);
-                        if (selectedMethod < 5 && selectedMethod > 60)
+                        if (selectedMethod < 5 || selectedMethod > 60)
                             throw new Exception();
                         isInInputLoop = false;
                     }
@@ -258,7 +259,7 @@ namespace WeatherAPI
                     {
                         input = UI.InputHandler.ReadLine();
                         int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3 || selectedMethod != 4)
+                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod != 4)
                             throw new Exception();
                         isInInputLoop = false;
                     }
@@ -302,7 +303,7 @@ namespace WeatherAPI
                     try
                     {
                         int.TryParse(input, out sunriseFirst);
-                        if (selectedMethod < 1 && selectedMethod > 24)
+                        if (selectedMethod < 1 || selectedMethod > 24)
                             throw new Exception();
                         isInInputLoop = false;
                     }
@@ -321,7 +322,7 @@ namespace WeatherAPI
                     try
                     {
                         int.TryParse(input, out sunriseLast);
-                        if (selectedMethod < 1 && selectedMethod > 24)
+                        if (selectedMethod < 1 || selectedMethod > 24)
                             throw new Exception();
                         isInInputLoop = false;
                     }
