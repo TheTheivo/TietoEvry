@@ -19,7 +19,8 @@ namespace WeatherAPI
         {
             return instance;
         }
-        public enum ModeType {
+        public enum ModeType
+        {
             manual,
             automatic
         }
@@ -28,7 +29,7 @@ namespace WeatherAPI
         public void StartLoop(ModeType mode)
         {
             this.mode = mode;
-            
+
             switch (this.mode)
             {
                 case ModeType.automatic:
@@ -71,7 +72,7 @@ namespace WeatherAPI
             if (selection == 1)
             {
                 data = WeatherIODataHelper.GetLatestWeatherDataFromXml();
-                
+
             }
 
             if (selection == 2)
@@ -84,7 +85,7 @@ namespace WeatherAPI
                 }
 
                 isInInputLoop = true;
-                while(isInInputLoop)
+                while (isInInputLoop)
                 {
                     input = UI.InputHandler.ReadLine();
                     try
@@ -110,13 +111,13 @@ namespace WeatherAPI
                 Task<Location> taskData = null;
 
                 isInInputLoop = true;
-                while(isInInputLoop)
+                while (isInInputLoop)
                 {
                     input = UI.InputHandler.ReadLine();
                     try
                     {
                         int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod !=4)
+                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod != 4)
                             throw new Exception();
                         isInInputLoop = false;
                     }
@@ -143,7 +144,7 @@ namespace WeatherAPI
                         Console.WriteLine("To exit an app type \"Exit\".");
                         isInInputLoop = true;
                         uint days = 1;
-                        while(isInInputLoop)
+                        while (isInInputLoop)
                         {
                             input = UI.InputHandler.ReadLine();
 
@@ -175,168 +176,167 @@ namespace WeatherAPI
             string selectedCity = "";
             var data = new List<Location>();
 
-            while(mode == ModeType.automatic)
+            UI.OutputHandler.PresentAutomaticPullFreqency();
+
+            bool isInInputLoop = true;
+            var selectedMethod = 0;
+
+            while (isInInputLoop)
             {
-                UI.OutputHandler.PresentAutomaticPullFreqency();
+                input = UI.InputHandler.ReadLine();
 
-                bool isInInputLoop = true;
-                var selectedMethod = 0;
-
-                while(isInInputLoop)
+                try
                 {
-                    input = UI.InputHandler.ReadLine();
-
-                    try
-                    {
-                        int.TryParse(input, out selectedMethod);
-                        if (selectedMethod < 5 || selectedMethod > 60)
-                            throw new Exception();
-                        isInInputLoop = false;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentErrorInput();
-                    }
+                    int.TryParse(input, out selectedMethod);
+                    if (selectedMethod < 5 || selectedMethod > 60)
+                        throw new Exception();
+                    isInInputLoop = false;
                 }
-                
-                interval = interval * 1000;
-
-                Console.WriteLine("Type how long will be data pulled in seconds"); ;
-                Console.WriteLine("To exit an app type Exit.");
-
-                isInInputLoop = true;
-                while(isInInputLoop)
+                catch (Exception e)
                 {
-                    input = UI.InputHandler.ReadLine();
-                    try
-                    {
-                        int.TryParse(input, out selectedMethod);
-                        isInInputLoop = false;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentErrorInput();
-                    }
+                    UI.OutputHandler.PresentErrorInput();
                 }
-                
-                elapsedTime = selectedMethod*1000;
-
-                Console.WriteLine("Choose one of the cities by typing it:");
-                var cities = CitiesLoader.GetCities();
-                foreach (var city in cities)
-                {
-                    Console.WriteLine(city);
-                }
-
-                isInInputLoop = true;
-                while(isInInputLoop)
-                {
-                    input = UI.InputHandler.ReadLine();
-
-                    try
-                    {
-                        if (!cities.Contains(input))
-                            throw new Exception();
-                        selectedCity = input;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentCustomInputInput();
-                    }
-                }
-                
-
-                Console.WriteLine("To get Realtime weather type 1");
-                Console.WriteLine("To get Astronomy type 2");
-                Console.WriteLine("To get TimeZone type 3");
-                Console.WriteLine("To get All type 4");
-                Console.WriteLine("To exit an app type Exit.");
-
-                isInInputLoop = true;
-                while(isInInputLoop)
-                {
-                    try
-                    {
-                        input = UI.InputHandler.ReadLine();
-                        int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod != 4)
-                            throw new Exception();
-                        isInInputLoop = false;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentErrorInput();
-                    }
-                }
-                
-
-                //Standartne bych zde udelal job a plne asynchorne, ale pokud chapu zadani, tahle cast by mela byt synchroni a jen se intervalem a dobou volani urci kolikrat se ma metoda zavolat
-                stopwatch.Start();
-                while(stopwatch.ElapsedMilliseconds <= elapsedTime)
-                {
-                    switch (selectedMethod)
-                    {
-                        case (1):
-                            data.Add(Task.Run(async () => await WeatherApi.GetRealTimeWeather(selectedCity)).Result);
-                            break;
-                        case (2):
-                            data.Add(Task.Run(async () => await WeatherApi.GetAstronomy(selectedCity)).Result);
-                            break;
-                        case (3):
-                            data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
-                            break;
-                        case (4):
-                            data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
-                            break;
-                    }
-                }
-
-                int sunriseFirst = 0;
-                int sunriseLast = 0;
-                UI.OutputHandler.PresentHourInput();
-
-                isInInputLoop = true;
-
-                while(isInInputLoop)
-                {
-                    input = UI.InputHandler.ReadLine();
-                    try
-                    {
-                        int.TryParse(input, out sunriseFirst);
-                        if (selectedMethod < 1 || selectedMethod > 24)
-                            throw new Exception();
-                        isInInputLoop = false;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentHourInput();
-                    }
-                }
-
-                UI.OutputHandler.PresentHourInput();
-
-                isInInputLoop = true;
-                while(isInInputLoop)
-                {
-                    input = UI.InputHandler.ReadLine();
-                    try
-                    {
-                        int.TryParse(input, out sunriseLast);
-                        if (selectedMethod < 1 || selectedMethod > 24)
-                            throw new Exception();
-                        isInInputLoop = false;
-                    }
-                    catch (Exception e)
-                    {
-                        UI.OutputHandler.PresentHourInput();
-                    }
-                }
-                
-
-                var filteredData = data.Where(x => x.Astronomy.Sunrise.Hour > sunriseFirst && x.Astronomy.Sunset.Hour < sunriseLast).ToList();
-                Console.WriteLine($"Number of entried: {filteredData.Count}");
-                
             }
+
+            interval = interval * 1000;
+
+            Console.WriteLine("Type how long will be data pulled in seconds"); ;
+            Console.WriteLine("To exit an app type Exit.");
+
+            isInInputLoop = true;
+            while (isInInputLoop)
+            {
+                input = UI.InputHandler.ReadLine();
+                try
+                {
+                    int.TryParse(input, out selectedMethod);
+                    isInInputLoop = false;
+                }
+                catch (Exception e)
+                {
+                    UI.OutputHandler.PresentErrorInput();
+                }
+            }
+
+            elapsedTime = selectedMethod * 1000;
+
+            Console.WriteLine("Choose one of the cities by typing it:");
+            var cities = CitiesLoader.GetCities();
+            foreach (var city in cities)
+            {
+                Console.WriteLine(city);
+            }
+
+            isInInputLoop = true;
+            while (isInInputLoop)
+            {
+                input = UI.InputHandler.ReadLine();
+
+                try
+                {
+                    if (!cities.Contains(input))
+                        throw new Exception();
+                    selectedCity = input;
+                    isInInputLoop = false;
+                }
+                catch (Exception e)
+                {
+                    UI.OutputHandler.PresentCustomInputInput();
+                }
+            }
+
+
+            Console.WriteLine("To get Realtime weather type 1");
+            Console.WriteLine("To get Astronomy type 2");
+            Console.WriteLine("To get TimeZone type 3");
+            Console.WriteLine("To get All type 4");
+            Console.WriteLine("To exit an app type Exit.");
+
+            isInInputLoop = true;
+            while (isInInputLoop)
+            {
+                try
+                {
+                    input = UI.InputHandler.ReadLine();
+                    int.TryParse(input, out selectedMethod);
+                    if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3 && selectedMethod != 4)
+                        throw new Exception();
+                    isInInputLoop = false;
+                }
+                catch (Exception e)
+                {
+                    UI.OutputHandler.PresentErrorInput();
+                }
+            }
+
+
+            //Standartne bych zde udelal job a plne asynchorne, ale pokud chapu zadani, tahle cast by mela byt synchroni a jen se intervalem a dobou volani urci kolikrat se ma metoda zavolat
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds <= elapsedTime)
+            {
+                switch (selectedMethod)
+                {
+                    case (1):
+                        data.Add(Task.Run(async () => await WeatherApi.GetRealTimeWeather(selectedCity)).Result);
+                        break;
+                    case (2):
+                        data.Add(Task.Run(async () => await WeatherApi.GetAstronomy(selectedCity)).Result);
+                        break;
+                    case (3):
+                        data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
+                        break;
+                    case (4):
+                        data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
+                        break;
+                }
+            }
+
+            int sunriseFirst = 0;
+            int sunriseLast = 0;
+            UI.OutputHandler.PresentHourInput();
+
+            isInInputLoop = true;
+
+            while (isInInputLoop)
+            {
+                input = UI.InputHandler.ReadLine();
+                try
+                {
+                    int.TryParse(input, out sunriseFirst);
+                    if (selectedMethod < 1 || selectedMethod > 24)
+                        throw new Exception();
+                    isInInputLoop = false;
+                }
+                catch (Exception e)
+                {
+                    UI.OutputHandler.PresentHourInput();
+                }
+            }
+
+            UI.OutputHandler.PresentHourInput();
+
+            isInInputLoop = true;
+            while (isInInputLoop)
+            {
+                input = UI.InputHandler.ReadLine();
+                try
+                {
+                    int.TryParse(input, out sunriseLast);
+                    if (selectedMethod < 1 || selectedMethod > 24)
+                        throw new Exception();
+                    isInInputLoop = false;
+                }
+                catch (Exception e)
+                {
+                    UI.OutputHandler.PresentHourInput();
+                }
+            }
+
+
+            var filteredData = data.Where(x => x.Astronomy.Sunrise.Hour > sunriseFirst && x.Astronomy.Sunset.Hour < sunriseLast).ToList();
+            Console.WriteLine($"Number of entried: {filteredData.Count}");
+
+
         }
     }
 }
