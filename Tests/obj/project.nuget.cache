@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RGn6DCwEVbu7alqmM963PxToY6wZ2Eva/aaVivViUELH8wPp9lJLuCeIdThusL8cL0/DWUSGOm5So7B6cX+s3A==",
+  "dgSpecHash": "8EE8Er0HFNkPjo2fOmANnUgqbJiqYf71MQ9kbx1EWbXF9BQnGcD2hRjbJrFtMgzVLgfr38IwrQYzVR2dqwDW0w==",
   "success": true,
-  "projectFilePath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\Tests\\Tests.csproj",
+  "projectFilePath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\TietoEvry2\\Tests\\Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Robin Sullivan\\.nuget\\packages\\microsoft.codecoverage\\16.5.0\\microsoft.codecoverage.16.5.0.nupkg.sha512",
     "C:\\Users\\Robin Sullivan\\.nuget\\packages\\microsoft.dotnet.internalabstractions\\1.0.0\\microsoft.dotnet.internalabstractions.1.0.0.nupkg.sha512",

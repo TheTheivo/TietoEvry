@@ -10,11 +10,11 @@ namespace WeatherAPI
         public static string CitiesFile { get; private set; }
         public static int? CallIntervalTospecificEndpoint { get; private set; }
         public static int? CallIntervalToAllEndpoints { get; private set; }
-        public static bool EndProgram { get; set; }
+        public static bool EndNotProgram { get; set; }
 
         public static void SetRunInConstants(string xmlDirectory,string citiesFile,int callIntervalToSpecificEndpoint,int callIntervalToAllEndpoints)
         {
-            EndProgram = false;
+            EndNotProgram = true;
             if (string.IsNullOrEmpty(XmlDataFile))
                 XmlDataFile = xmlDirectory;
             if (string.IsNullOrEmpty(CitiesFile))

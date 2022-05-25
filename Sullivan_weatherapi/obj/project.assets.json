@@ -55,11 +55,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\Sullivan_weatherapi\\WeatherAPI.csproj",
+      "projectUniqueName": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\TietoEvry2\\Sullivan_weatherapi\\WeatherAPI.csproj",
       "projectName": "WeatherAPI",
-      "projectPath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\Sullivan_weatherapi\\WeatherAPI.csproj",
+      "projectPath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\TietoEvry2\\Sullivan_weatherapi\\WeatherAPI.csproj",
       "packagesPath": "C:\\Users\\Robin Sullivan\\.nuget\\packages\\",
-      "outputPath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\Sullivan_weatherapi\\obj\\",
+      "outputPath": "C:\\pohovor-ulohy\\Sullivan_weatherapi\\TietoEvry2\\Sullivan_weatherapi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",

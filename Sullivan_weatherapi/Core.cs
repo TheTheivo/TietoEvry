@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -45,13 +46,15 @@ namespace WeatherAPI
             string input = "";
             string selectedCity = "";
 
-                Console.WriteLine("To load data type 1");
-                Console.WriteLine("To get data type 2");
+            Console.WriteLine("To load data type 1");
+            Console.WriteLine("To get data type 2");
 
-                var selection = 0;
-                input = Core.ReadCheckInput();
-                if (Constants.EndProgram)
-                    return;
+            var selection = 0;
+            bool isInInputLoop = true;
+
+            while (isInInputLoop)
+            {
+                input = UI.InputHandler.ReadLine();
                 try
                 {
                     int.TryParse(input, out selection);
@@ -60,92 +63,106 @@ namespace WeatherAPI
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Please select give choices by typing the number.");
-                    Console.WriteLine("To exit an app type \"Exit\".");
+                    UI.OutputHandler.PresentErrorInput();
+                }
+            }
+
+            if (selection == 1)
+            {
+                data = WeatherIODataHelper.GetLatestWeatherDataFromXml();
+                
+            }
+
+            if (selection == 2)
+            {
+                Console.WriteLine("Choose one of the cities by typing it:");
+                var cities = CitiesLoader.GetCities();
+                foreach (var city in cities)
+                {
+                    Console.WriteLine(city);
                 }
 
-                if (selection == 1)
+                isInInputLoop = true;
+                while(isInInputLoop)
                 {
-                    data = WeatherIODataHelper.GetLatestWeatherDataFromXml();
-                    
-                    var selectedMethod = 0;
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
-                    try
-                    {
-                        int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 && selectedMethod != 2 && selectedMethod != 3)
-                            throw new Exception();
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Please select give choices by typing the number.");
-                        Console.WriteLine("To exit an app type \"Exit\".");
-                    }
-                }
-
-                if (selection == 2)
-                {
-                    Console.WriteLine("Choose one of the cities by typing it:");
-                    var cities = CitiesLoader.GetCities();
-                    foreach (var city in cities)
-                    {
-                        Console.WriteLine(city);
-                    }
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
+                    input = UI.InputHandler.ReadLine();
                     try
                     {
                         if (!cities.Contains(input))
                             throw new Exception();
                         selectedCity = input;
+                        isInInputLoop = false;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Please select give choices by typing the City");
-                        Console.WriteLine("To exit an app type \"Exit\".");
+                        UI.OutputHandler.PresentCustomInputInput();
                     }
-                    if (Constants.EndProgram)
-                        return;
+                }
 
-                    Console.WriteLine("To get Realtime weather type 1");
-                    Console.WriteLine("To get Astronomy type 2");
-                    Console.WriteLine("To get TimeZone type 3");
-                    Console.WriteLine("To get Forecast type 4");
-                    Console.WriteLine("To exit an app type Exit.");
+                Console.WriteLine("To get Realtime weather type 1");
+                Console.WriteLine("To get Astronomy type 2");
+                Console.WriteLine("To get TimeZone type 3");
+                Console.WriteLine("To get Forecast type 4");
+                Console.WriteLine("To exit an app type Exit.");
 
-                    var selectedMethod = 0;
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
+                var selectedMethod = 0;
+                Task<Location> taskData = null;
+
+                isInInputLoop = true;
+                while(isInInputLoop)
+                {
+                    input = UI.InputHandler.ReadLine();
                     try
                     {
                         int.TryParse(input, out selectedMethod);
-                        if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3)
+                        if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3 || selectedMethod !=4)
                             throw new Exception();
+                        isInInputLoop = false;
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine("Please select given choices by typing the number.");
                         Console.WriteLine("To exit an app type \"Exit\".");
                     }
-
-                    switch (selectedMethod)
-                    {
-                        case (1):
-                            data = Task.Run(async () => await WeatherApi.GetRealTimeWeather(selectedCity)).Result;
-                            break;
-                        case (2):
-                            data = Task.Run(async () => await WeatherApi.GetAstronomy(selectedCity)).Result;
-                            break;
-                        case (3):
-                            data = Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result;
-                            break;
-                    }
-                    WeatherIODataHelper.WriteWeatherDataToXML(data);
                 }
+
+                switch (selectedMethod)
+                {
+                    case (1):
+                        taskData = WeatherApi.GetRealTimeWeather(selectedCity);
+                        break;
+                    case (2):
+                        taskData = WeatherApi.GetAstronomy(selectedCity);
+                        break;
+                    case (3):
+                        taskData = WeatherApi.GetTimeZone(selectedCity);
+                        break;
+                    case (4):
+                        Console.WriteLine("Select how many days for forecast.");
+                        Console.WriteLine("To exit an app type \"Exit\".");
+                        isInInputLoop = true;
+                        uint days = 1;
+                        while(isInInputLoop)
+                        {
+                            input = UI.InputHandler.ReadLine();
+
+                            try
+                            {
+                                uint.TryParse(input, out days);
+                                isInInputLoop = false;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Select how many days for forecast.");
+                                Console.WriteLine("To exit an app type \"Exit\".");
+                            }
+                        }
+                        taskData = WeatherApi.GetForecast(selectedCity);
+                        break;
+                }
+
+                WeatherIODataHelper.WriteWeatherDataToXML(taskData.Result);
+            }
         }
 
         private void AutomaticLop()
@@ -159,41 +176,48 @@ namespace WeatherAPI
 
             while(mode == ModeType.automatic)
             {
-                Console.WriteLine("Type how frueqently will be data pulled, between 5 seconds and 60 secds");;
-                Console.WriteLine("To exit an app type Exit.");
+                UI.OutputHandler.PresentAutomaticPullFreqency();
 
+                bool isInInputLoop = true;
                 var selectedMethod = 0;
-                input = Core.ReadCheckInput();
-                if (Constants.EndProgram)
-                    return;
-                try
+
+                while(isInInputLoop)
                 {
-                    int.TryParse(input, out selectedMethod);
-                    if (selectedMethod < 5 && selectedMethod >60)
-                        throw new Exception();
+                    input = UI.InputHandler.ReadLine();
+
+                    try
+                    {
+                        int.TryParse(input, out selectedMethod);
+                        if (selectedMethod < 5 && selectedMethod > 60)
+                            throw new Exception();
+                        isInInputLoop = false;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentErrorInput();
+                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Please select give choices by typing the number.");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
+                
                 interval = interval * 1000;
 
                 Console.WriteLine("Type how long will be data pulled in seconds"); ;
                 Console.WriteLine("To exit an app type Exit.");
 
-                input = Core.ReadCheckInput();
-                if (Constants.EndProgram)
-                    return;
-                try
+                isInInputLoop = true;
+                while(isInInputLoop)
                 {
-                    int.TryParse(input, out selectedMethod);
+                    input = UI.InputHandler.ReadLine();
+                    try
+                    {
+                        int.TryParse(input, out selectedMethod);
+                        isInInputLoop = false;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentErrorInput();
+                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Please select give choices by typing the number.");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
+                
                 elapsedTime = selectedMethod*1000;
 
                 Console.WriteLine("Choose one of the cities by typing it:");
@@ -202,43 +226,48 @@ namespace WeatherAPI
                 {
                     Console.WriteLine(city);
                 }
-                input = Core.ReadCheckInput();
-                if (Constants.EndProgram)
-                    return;
-                try
+
+                isInInputLoop = true;
+                while(isInInputLoop)
                 {
-                    if (!cities.Contains(input))
-                        throw new Exception();
-                    selectedCity = input;
+                    input = UI.InputHandler.ReadLine();
+
+                    try
+                    {
+                        if (!cities.Contains(input))
+                            throw new Exception();
+                        selectedCity = input;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentCustomInputInput();
+                    }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Please select give choices by typing the City");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
-                if (Constants.EndProgram)
-                    return;
+                
 
                 Console.WriteLine("To get Realtime weather type 1");
                 Console.WriteLine("To get Astronomy type 2");
                 Console.WriteLine("To get TimeZone type 3");
                 Console.WriteLine("To get All type 4");
                 Console.WriteLine("To exit an app type Exit.");
+
+                isInInputLoop = true;
+                while(isInInputLoop)
+                {
+                    try
+                    {
+                        input = UI.InputHandler.ReadLine();
+                        int.TryParse(input, out selectedMethod);
+                        if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3 || selectedMethod != 4)
+                            throw new Exception();
+                        isInInputLoop = false;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentErrorInput();
+                    }
+                }
                 
-                try
-                {
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
-                    int.TryParse(input, out selectedMethod);
-                    if (selectedMethod != 1 || selectedMethod != 2 || selectedMethod != 3 || selectedMethod != 4)
-                        throw new Exception();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Please select give choices by typing the number.");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
 
                 //Standartne bych zde udelal job a plne asynchorne, ale pokud chapu zadani, tahle cast by mela byt synchroni a jen se intervalem a dobou volani urci kolikrat se ma metoda zavolat
                 stopwatch.Start();
@@ -263,71 +292,50 @@ namespace WeatherAPI
 
                 int sunriseFirst = 0;
                 int sunriseLast = 0;
-                Console.WriteLine("Type hours in 24 format for sunrise search, begining");
-                Console.WriteLine("To exit an app type Exit.");
+                UI.OutputHandler.PresentHourInput();
+
+                isInInputLoop = true;
+
+                while(isInInputLoop)
+                {
+                    input = UI.InputHandler.ReadLine();
+                    try
+                    {
+                        int.TryParse(input, out sunriseFirst);
+                        if (selectedMethod < 1 && selectedMethod > 24)
+                            throw new Exception();
+                        isInInputLoop = false;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentHourInput();
+                    }
+                }
+
+                UI.OutputHandler.PresentHourInput();
+
+                isInInputLoop = true;
+                while(isInInputLoop)
+                {
+                    input = UI.InputHandler.ReadLine();
+                    try
+                    {
+                        int.TryParse(input, out sunriseLast);
+                        if (selectedMethod < 1 && selectedMethod > 24)
+                            throw new Exception();
+                        isInInputLoop = false;
+                    }
+                    catch (Exception e)
+                    {
+                        UI.OutputHandler.PresentHourInput();
+                    }
+                }
                 
-                try
-                {
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
-                    int.TryParse(input, out sunriseFirst);
-                    if (selectedMethod < 1 && selectedMethod > 24)
-                        throw new Exception();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Type hours in 24 format for sunrise search, end");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
-                Console.WriteLine("Type hours in 24 format for sunrise search");
-                Console.WriteLine("To exit an app type Exit.");
-                
-                try
-                {
-                    input = Core.ReadCheckInput();
-                    if (Constants.EndProgram)
-                        return;
-                    int.TryParse(input, out sunriseLast);
-                    if (selectedMethod < 1 && selectedMethod > 24)
-                        throw new Exception();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Please select give choices by typing the number.");
-                    Console.WriteLine("To exit an app type \"Exit\".");
-                }
 
                 var filteredData = data.Where(x => x.Astronomy.Sunrise.Hour > sunriseFirst && x.Astronomy.Sunset.Hour < sunriseLast).ToList();
                 Console.WriteLine($"Number of entried: {filteredData.Count}");
                 
             }
-        }
-
-        private void GetForecastCallType(string city, int? days = null)
-        {
-            if (DateTime.Now.Minute % 2 == 0)
-            {
-                var result = Task.Run(async () => await WeatherApi.GetForecast(city));
-            }
-            else
-            {
-                if (days == null)
-                    days = 1;
-                var result = Task.Run(async () => await WeatherApi.GetForecast(city, days));
-            }
-        }
-        private static void CheckForExitInput(string input)
-        {
-            if (input.ToLower() == "Exit")
-                Constants.EndProgram = true;
-        }
-
-        public static string ReadCheckInput()
-        {
-            var line = Console.ReadLine();
-            CheckForExitInput(line);
-            return line;
         }
     }
 }

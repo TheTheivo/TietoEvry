@@ -20,6 +20,7 @@ namespace WeatherAPI.Models
         public Weather Weather { get; private set; }
         public Astronomy Astronomy { get; private set; }
 
+        public Forecast Forecast { get; private set; }
         public Location(Location location, Weather weather = null, Astronomy astronomy = null)
         {
             Name = location.Name;
@@ -34,6 +35,17 @@ namespace WeatherAPI.Models
             Astronomy = astronomy;
         }
 
+        public Location(ForecastRoot root)
+        {
+            Name = root.location.location.name;
+            Region = root.location.location.region;
+            Country = root.location.location.country;
+            Latitude = root.location.location.lat;
+            Longitude = root.location.location.lon;
+            TzID = root.location.location.tz_id;
+            LocalTimeEpoch = root.location.location.localtime_epoch;
+            Forecast = root.forecast;
+        }
         public Location (LocationRoot root)
         {
             Name = root.location.name;

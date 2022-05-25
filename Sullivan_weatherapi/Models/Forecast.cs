@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using WeatherAPI.Deserializer;
+using WeatherAPI.Deserializer.WeatherAPI.Deserializer;
 
 namespace WeatherAPI.Models
 {
@@ -58,7 +59,7 @@ namespace WeatherAPI.Models
 
     public class ForecastRoot
     {
-        public Location location { get; set; }
+        public LocationRoot location { get; set; }
         public Current current { get; set; }
         public Forecast forecast { get; set; }
     }

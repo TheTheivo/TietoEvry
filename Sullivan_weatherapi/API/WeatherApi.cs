@@ -93,17 +93,16 @@ namespace WeatherAPI.API
             return new Location();
         }
 
-        public static async Task<ForecastRoot> GetForecast(string city, int? days =null)
+        public static async Task<Location> GetForecast(string city, int? days =null)
         {
-            Uri uri = new Uri("https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}") ;
-            if(days == null)
+            Uri uri = new Uri("https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}");
+            if (DateTime.Now.Minute % 2 != 0)
             {
-                uri = new Uri($"https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}");
-            }
-            else
-            {
+                if (days == null)
+                    days = 1;
                 uri = new Uri($"https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}&days={days}");
             }
+
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -119,7 +118,8 @@ namespace WeatherAPI.API
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
                 var forecastRoot = JsonSerializer.Deserialize<ForecastRoot>(body);
-                return forecastRoot;
+                var timeZone = new Location(forecastRoot);
+                return timeZone;
             }
         }
 
@@ -127,10 +127,10 @@ namespace WeatherAPI.API
         {
             try
             {
-                var location = await GetTimeZone(city);
-                var astronomy = await GetAstronomy(city);
-                var realTimeWeather = await GetRealTimeWeather(city);
-                return new Location(location, realTimeWeather.Weather, astronomy.Astronomy);
+                var location = GetTimeZone(city);
+                var astronomy = GetAstronomy(city);
+                var realTimeWeather = GetRealTimeWeather(city);
+                return new Location(location.Result,realTimeWeather.Result.Weather,astronomy.Result.Astronomy);
 
             }
             catch (Exception e)
