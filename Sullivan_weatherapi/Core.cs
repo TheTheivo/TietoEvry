@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WeatherAPI.API;
 using WeatherAPI.DirectoryHelpers;
@@ -289,6 +290,7 @@ namespace WeatherAPI
                         data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
                         break;
                 }
+                Thread.Sleep(interval); // Mozny TODO: prepravocat na peridoicke volani, Timer pravdepodobne nejlepe
             }
 
             int sunriseFirst = 0;
