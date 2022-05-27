@@ -313,6 +313,13 @@ namespace WeatherAPI
                     }
                         
                 }
+                try
+                {
+                    WeatherIODataHelper.WriteWeatherDataToXML(data, "atomatic");
+                }catch(Exception e)
+                {
+                    Console.WriteLine($"Error: {e.Message}");
+                }
             }
             if (timeoutCounter == 5)
                 return;

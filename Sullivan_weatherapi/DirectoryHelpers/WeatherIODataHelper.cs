@@ -13,37 +13,23 @@ namespace WeatherAPI.DirectoryHelpers
         public static void WriteWeatherDataToXML(Location data)
         {
             System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
-
-            var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
-
-            files = directory.GetFiles().ToList<FileInfo>();
-            if (files.Count > 0)
-            {
-                File.Delete(Constants.XmlDataFile);
-            }
             
-            FileStream fs = File.Create($"{Constants.XmlDataFile}");
+            FileStream fs = File.Create($"{Constants.XmlDataFile}__manual__{data.LocalTime}");
             writer.Serialize(fs, data);
             fs.Close();
             
         }
 
-        public static void WriteWeatherDataToXML(ForecastRoot data)
+        public static void WriteWeatherDataToXML(List<Location> datas, string nameCall)
         {
             System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Forecast));
 
-            var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
-
-            files = directory.GetFiles().ToList<FileInfo>();
-            if (files.Count > 0)
+            foreach(var data in datas)
             {
-                File.Delete(Constants.XmlDataFile);
+                FileStream fs = File.Create($"{Constants.XmlDataFile}__{nameCall}__{data.LocalTime}");
+                writer.Serialize(fs, data);
+                fs.Close();
             }
-
-            FileStream fs = File.Create($"{Constants.XmlDataFile}");
-            writer.Serialize(fs, data);
-            fs.Close();
-
         }
 
         public static ForecastRoot GetLatestWeatherDataFromXmlForecast()
