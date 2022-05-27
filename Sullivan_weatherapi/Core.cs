@@ -308,9 +308,7 @@ namespace WeatherAPI
                             data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
                             break;
                         case (4):
-                            var task = WeatherApi.GetAll(selectedCity);
-                            task.Wait();
-                            data.Add(task.Result);
+                            data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
                             break;
                     }
                     Thread.Sleep(interval); // Mozny TODO: prepravocat na peridoicke volani, Timer pravdepodobne nejlepe
