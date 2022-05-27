@@ -6,7 +6,7 @@ namespace WeatherAPI
 {
     public static class Constants
     {
-        public static string XmlDataFile { get ; private set;}
+        public static string XmlDataDir { get ; private set;}
         public static string CitiesFile { get; private set; }
         public static int? CallIntervalTospecificEndpoint { get; private set; }
         public static int? CallIntervalToAllEndpoints { get; private set; }
@@ -15,8 +15,8 @@ namespace WeatherAPI
         public static void SetRunInConstants(string xmlDirectory,string citiesFile,int callIntervalToSpecificEndpoint,int callIntervalToAllEndpoints)
         {
             EndNotProgram = true;
-            if (string.IsNullOrEmpty(XmlDataFile))
-                XmlDataFile = xmlDirectory;
+            if (string.IsNullOrEmpty(XmlDataDir))
+                XmlDataDir = xmlDirectory;
             if (string.IsNullOrEmpty(CitiesFile))
                 CitiesFile = citiesFile;
             if (CallIntervalTospecificEndpoint == null)

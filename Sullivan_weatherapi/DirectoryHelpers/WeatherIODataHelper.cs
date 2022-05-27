@@ -9,49 +9,42 @@ namespace WeatherAPI.DirectoryHelpers
 {
     public class WeatherIODataHelper
     {
-        private static List<FileInfo> files = new List<FileInfo>();
+        public static List<FileInfo> files = new List<FileInfo>();
         public static void WriteWeatherDataToXML(Location data)
         {
             System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
             
-            FileStream fs = File.Create($"{Constants.XmlDataFile}__manual__{data.LocalTime}");
+            FileStream fs = File.Create($"{Constants.XmlDataDir}weatherdata__manual__{data.LocalTime.Ticks}.xml");
             writer.Serialize(fs, data);
+            files.Add(new FileInfo(fs.Name));
             fs.Close();
             
         }
 
         public static void WriteWeatherDataToXML(List<Location> datas, string nameCall)
         {
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Forecast));
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
 
             foreach(var data in datas)
             {
-                FileStream fs = File.Create($"{Constants.XmlDataFile}__{nameCall}__{data.LocalTime}");
+                
+                FileStream fs = File.Create($"{Constants.XmlDataDir}weatherdata__{nameCall}__{data.LocalTime.Ticks}.xml");
                 writer.Serialize(fs, data);
+                files.Add(new FileInfo(fs.Name));
                 fs.Close();
             }
         }
 
-        public static ForecastRoot GetLatestWeatherDataFromXmlForecast()
+
+        public static void ListAllXmlData()
         {
-            if (files.Count == 0)
-                throw new Exception("There are no data to read");
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
 
-            var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
-
-            //Check for file
-
-            var fileData = new ForecastRoot();
-
-            using (Stream reader = new FileStream($"{Constants.XmlDataFile},", FileMode.Open))
+            foreach(var file in files)
             {
-                fileData = (ForecastRoot)writer.Deserialize(reader);
+                Console.WriteLine(file.Name);
             }
-            return fileData;
         }
-
-        public static Location GetLatestWeatherDataFromXml()
+        public static Location GetWeatherDataFromXml(string filename)
         {
             System.Xml.Serialization.XmlSerializer writer = null;
             var fileData = new Location();
@@ -59,9 +52,14 @@ namespace WeatherAPI.DirectoryHelpers
             {
                 if (files.Count == 0)
                     throw new Exception("There are no data to read");
+
+                var checkFile = files.Find(x => x.Name == filename);
+                if (checkFile == null)
+                    throw new Exception("File not found");
+
                 writer = new System.Xml.Serialization.XmlSerializer(typeof(Location));
-                var directory = new DirectoryInfo($"{Constants.XmlDataFile}");
-                using (Stream reader = new FileStream($"{Constants.XmlDataFile},", FileMode.Open))
+                var directory = new DirectoryInfo($"{Constants.XmlDataDir}");
+                using (Stream reader = new FileStream($"{Constants.XmlDataDir},", FileMode.Open))
                 {
                     fileData = (Location)writer.Deserialize(reader);
                 }

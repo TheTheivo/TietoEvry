@@ -17,7 +17,8 @@ namespace WeatherAPI
             {
                 directory = directory.Parent;
             }
-            string xmlDirectory = $"{directory}/Data/WeatherData/LatestWeatherData.xml";
+            directory = new DirectoryInfo($"{directory}/Sullivan_weatherapi");
+            string xmlDirectory = $"{directory}/Data/WeatherData/";
             string citiesFile = $"{directory}/Data/SupportedCities.txt";
             int callIntervalToSpecificEndpoint = 0;
             int callIntervalToAllEndpoints = 0;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using WeatherAPI.API;
 using WeatherAPI.DirectoryHelpers;
 using WeatherAPI.Models;
+using WeatherAPI.UI;
 
 namespace WeatherAPI
 {
@@ -72,7 +73,16 @@ namespace WeatherAPI
 
             if (selection == 1)
             {
-                data = WeatherIODataHelper.GetLatestWeatherDataFromXml();
+                Console.WriteLine("Choose one of the files by typing it:");
+                WeatherIODataHelper.ListAllXmlData();
+                input = InputHandler.ReadLine();
+                try
+                {
+                    data = WeatherIODataHelper.GetWeatherDataFromXml(input);
+                }catch(Exception e)
+                {
+                    return;
+                }
 
             }
 
@@ -279,8 +289,9 @@ namespace WeatherAPI
 
 
             //Standartne bych zde udelal job a plne asynchorne, ale pokud chapu zadani, tahle cast by mela byt synchroni a jen se intervalem a dobou volani urci kolikrat se ma metoda zavolat
-            stopwatch.Start();
+            
             int timeoutCounter = 0;
+            stopwatch.Start();
             while (stopwatch.ElapsedMilliseconds <= elapsedTime)
             {
                 try
@@ -297,7 +308,9 @@ namespace WeatherAPI
                             data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
                             break;
                         case (4):
-                            data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
+                            var task = WeatherApi.GetAll(selectedCity);
+                            task.Wait();
+                            data.Add(task.Result);
                             break;
                     }
                     Thread.Sleep(interval); // Mozny TODO: prepravocat na peridoicke volani, Timer pravdepodobne nejlepe
@@ -313,13 +326,14 @@ namespace WeatherAPI
                     }
                         
                 }
-                try
-                {
-                    WeatherIODataHelper.WriteWeatherDataToXML(data, "atomatic");
-                }catch(Exception e)
-                {
-                    Console.WriteLine($"Error: {e.Message}");
-                }
+            }
+            try
+            {
+                WeatherIODataHelper.WriteWeatherDataToXML(data, "atomatic");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message}");
             }
             if (timeoutCounter == 5)
                 return;
