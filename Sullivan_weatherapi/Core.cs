@@ -347,7 +347,7 @@ namespace WeatherAPI
                 try
                 {
                     int.TryParse(input, out sunriseFirst);
-                    if (selectedMethod < 1 || selectedMethod > 24)
+                    if (selectedMethod < 0 || selectedMethod > 23)
                         throw new Exception();
                     isInInputLoop = false;
                 }
@@ -366,7 +366,7 @@ namespace WeatherAPI
                 try
                 {
                     int.TryParse(input, out sunriseLast);
-                    if (selectedMethod < 1 || selectedMethod > 24)
+                    if (selectedMethod < 0 || selectedMethod > 23)
                         throw new Exception();
                     isInInputLoop = false;
                 }
