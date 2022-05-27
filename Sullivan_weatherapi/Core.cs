@@ -273,26 +273,42 @@ namespace WeatherAPI
 
             //Standartne bych zde udelal job a plne asynchorne, ale pokud chapu zadani, tahle cast by mela byt synchroni a jen se intervalem a dobou volani urci kolikrat se ma metoda zavolat
             stopwatch.Start();
+            int timeoutCounter = 0;
             while (stopwatch.ElapsedMilliseconds <= elapsedTime)
             {
-                switch (selectedMethod)
+                try
                 {
-                    case (1):
-                        data.Add(Task.Run(async () => await WeatherApi.GetRealTimeWeather(selectedCity)).Result);
-                        break;
-                    case (2):
-                        data.Add(Task.Run(async () => await WeatherApi.GetAstronomy(selectedCity)).Result);
-                        break;
-                    case (3):
-                        data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
-                        break;
-                    case (4):
-                        data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
-                        break;
+                    switch (selectedMethod)
+                    {
+                        case (1):
+                            data.Add(Task.Run(async () => await WeatherApi.GetRealTimeWeather(selectedCity)).Result);
+                            break;
+                        case (2):
+                            data.Add(Task.Run(async () => await WeatherApi.GetAstronomy(selectedCity)).Result);
+                            break;
+                        case (3):
+                            data.Add(Task.Run(async () => await WeatherApi.GetTimeZone(selectedCity)).Result);
+                            break;
+                        case (4):
+                            data.Add(Task.Run(async () => await WeatherApi.GetAll(selectedCity)).Result);
+                            break;
+                    }
+                    Thread.Sleep(interval); // Mozny TODO: prepravocat na peridoicke volani, Timer pravdepodobne nejlepe
+                    timeoutCounter = 0;
                 }
-                Thread.Sleep(interval); // Mozny TODO: prepravocat na peridoicke volani, Timer pravdepodobne nejlepe
+                catch(Exception e)
+                {
+                    timeoutCounter++;
+                    if (timeoutCounter == 5)
+                    {
+                        Console.WriteLine($"Automatic mode action was interrupted due to timeout. Please try again later.");
+                        break;
+                    }
+                        
+                }
             }
-
+            if (timeoutCounter == 5)
+                return;
             int sunriseFirst = 0;
             int sunriseLast = 0;
             UI.OutputHandler.PresentHourInput();

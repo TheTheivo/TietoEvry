@@ -17,49 +17,66 @@ namespace WeatherAPI.API
 
         public static async Task<Location> GetRealTimeWeather(string city)
         {
-            var request = new HttpRequestMessage
+            try
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://weatherapi-com.p.rapidapi.com/current.json?q={city}"),
-                Headers =
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://weatherapi-com.p.rapidapi.com/current.json?q={city}"),
+                    Headers =
         {
             { "X-RapidAPI-Host", Constants.XRapidAPIHost },
             { "X-RapidAPI-Key", Constants.XRapidAPIKey },
         },
-            };
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var TimeZoneJson = JsonSerializer.Deserialize<RealTimeRoot>(body);
-                var timezone = new Location(TimeZoneJson);
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var TimeZoneJson = JsonSerializer.Deserialize<RealTimeRoot>(body);
+                    var timezone = new Location(TimeZoneJson);
 
-                return timezone;
+                    return timezone;
+                }
+            }catch(Exception e)
+            {
+                Console.WriteLine($"Could not call {nameof(GetRealTimeWeather)}Error:{e.Message}");
+                throw e;
             }
+            
 
         }
 
         public static async Task<Models.Location> GetAstronomy(string city)
         {
-            var request = new HttpRequestMessage
+            try
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://weatherapi-com.p.rapidapi.com/astronomy.json?q={city}"),
-                Headers =
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://weatherapi-com.p.rapidapi.com/astronomy.json?q={city}"),
+                    Headers =
     {
         { "X-RapidAPI-Host", Constants.XRapidAPIHost },
         { "X-RapidAPI-Key", Constants.XRapidAPIKey },
     },
-            };
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var TimeZoneJson = JsonSerializer.Deserialize<AstroRoot>(body);
-                var timezone = new Location(TimeZoneJson);
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var TimeZoneJson = JsonSerializer.Deserialize<AstroRoot>(body);
+                    var timezone = new Location(TimeZoneJson);
 
-                return timezone;
+                    return timezone;
+                }
             }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Could not call {nameof(GetAstronomy)}Error:{e.Message}");
+                throw e;
+            }
+            
         }
 
         public static async Task<Location> GetTimeZone(string city)
@@ -89,37 +106,45 @@ namespace WeatherAPI.API
             catch (Exception e)
             {
                 Console.WriteLine($"Could not call {nameof(GetTimeZone)}Error:{e.Message}");
+                throw e;
             }
-            return new Location();
         }
 
         public static async Task<Location> GetForecast(string city, int? days =null)
         {
-            Uri uri = new Uri("https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}");
-            if (DateTime.Now.Minute % 2 != 0)
+            try
             {
-                if (days == null)
-                    days = 1;
-                uri = new Uri($"https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}&days={days}");
-            }
+                Uri uri = new Uri("https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}");
+                if (DateTime.Now.Minute % 2 != 0)
+                {
+                    if (days == null)
+                        days = 1;
+                    uri = new Uri($"https://weatherapi-com.p.rapidapi.com/forecast.json?q={city}&days={days}");
+                }
 
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = uri,
-                Headers =
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = uri,
+                    Headers =
     {
         { "X-RapidAPI-Host", Constants.XRapidAPIHost },
         { "X-RapidAPI-Key", Constants.XRapidAPIKey },
     },
-            };
-            using (var response = await client.SendAsync(request))
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var forecastRoot = JsonSerializer.Deserialize<ForecastRoot>(body);
+                    var timeZone = new Location(forecastRoot);
+                    return timeZone;
+                }
+            }
+            catch(Exception e)
             {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var forecastRoot = JsonSerializer.Deserialize<ForecastRoot>(body);
-                var timeZone = new Location(forecastRoot);
-                return timeZone;
+                Console.WriteLine($"Could not call {nameof(GetForecast)}Error:{e.Message}");
+                throw e;
             }
         }
 
@@ -135,9 +160,8 @@ namespace WeatherAPI.API
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Could not call {nameof(GetTimeZone)}Error:{e.Message}");
+                throw e;
             }
-            return new Location();
         }
 
     }
