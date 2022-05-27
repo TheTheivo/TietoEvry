@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using WeatherAPI.API;
 using static WeatherAPI.Core;
@@ -11,8 +12,13 @@ namespace WeatherAPI
         static void Main(string[] args)
         {
 #if DEBUG
-            string xmlDirectory = $"{Directory.GetCurrentDirectory()}/Data/WeatherData/LatestWeatherData.xml";
-            string citiesFile = $"{Directory.GetCurrentDirectory()}/Data/SupportedCities.txt";
+            var directory = new DirectoryInfo($"{Directory.GetCurrentDirectory()}");
+            while (directory != null && !directory.GetFiles("*.sln").Any())
+            {
+                directory = directory.Parent;
+            }
+            string xmlDirectory = $"{directory}/Data/WeatherData/LatestWeatherData.xml";
+            string citiesFile = $"{directory}/Data/SupportedCities.txt";
             int callIntervalToSpecificEndpoint = 0;
             int callIntervalToAllEndpoints = 0;
 #endif

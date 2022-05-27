@@ -9,18 +9,18 @@ namespace WeatherAPI.Models
 {
     public class Location
     {
-        public string Name { get; private set; }
-        public string Region { get; private set; }
-        public string Country { get; private set; }
-        public double Latitude { get; private set; }
-        public double Longitude { get; private set; }
-        public string TzID { get; private set; }
-        public int LocalTimeEpoch { get; private set; }
-        public DateTime LocalTime { get; private set; }
-        public Weather Weather { get; private set; }
-        public Astronomy Astronomy { get; private set; }
+        public string Name { get;  set; }
+        public string Region { get;  set; }
+        public string Country { get;  set; }
+        public double Latitude { get;  set; }
+        public double Longitude { get;  set; }
+        public string TzID { get;  set; }
+        public int LocalTimeEpoch { get;  set; }
+        public DateTime LocalTime { get;  set; }
+        public Weather Weather { get;  set; }
+        public Astronomy Astronomy { get;  set; }
 
-        public Forecast Forecast { get; private set; }
+        public Forecast Forecast { get;  set; }
         public Location(Location location, Weather weather = null, Astronomy astronomy = null)
         {
             Name = location.Name;
@@ -82,7 +82,7 @@ namespace WeatherAPI.Models
             TzID = root.location.tz_id;
             LocalTimeEpoch = root.location.localtime_epoch;
             LocalTime = DateTime.Parse(root.location.localtime);
-            Weather = new Weather(root.Weather);
+            Weather = new Weather(root.current);
             Astronomy = new Astronomy();
         }
     }

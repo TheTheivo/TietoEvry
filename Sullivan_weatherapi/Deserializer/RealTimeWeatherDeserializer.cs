@@ -41,6 +41,6 @@ namespace WeatherAPI.Deserializer
     public class RealTimeRoot
     {
         public LocationDeserializer location { get; set; }
-        public RealTimeWeatherDeserializer Weather{get; set;}
+        public RealTimeWeatherDeserializer current{get; set;}
     }
 }

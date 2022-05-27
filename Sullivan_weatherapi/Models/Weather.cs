@@ -7,29 +7,29 @@ namespace WeatherAPI.Models
 {
     public class Weather
     {
-        public int LastUpdatedEpoch { get; private set; }
-        public DateTime LastUpdated { get; private set; }
-        public double TemperatureCelsius { get; private set; }
-        public double TemperatureFahrenheit { get; private set; }
-        public bool IsDay{ get; private set; }
-        public double WindMPH { get; private set; }
-        public double WindKPH { get; private set; }
-        public int WindDegress { get; private set; }
-        public string WindDirection { get; private set; }
-        public double PressureMb { get; private set; }
-        public double PressureIn{ get; private set; }
-        public double PrecipMM { get; private set; }
-        public double PrecipIn { get; private set; }
-        public double Humidity { get; private set; }
-        public double Cloud{ get; private set; }
-        public double FellsLikeCelsius { get; private set; }
-        public double FellsLikeFahrenheit { get; private set; }
-        public double VisibilityKm { get; private set; }
-        public double VisibilityMiles { get; private set; }
-        public double UV { get; private set; }
-        public double GustMPH { get; private set; }
-        public double GustKPH { get; private set; }
-        public Condition Condition { get; private set; }
+        public int LastUpdatedEpoch { get;  set; }
+        public DateTime LastUpdated { get;  set; }
+        public double TemperatureCelsius { get;  set; }
+        public double TemperatureFahrenheit { get;  set; }
+        public bool IsDay{ get;  set; }
+        public double WindMPH { get;  set; }
+        public double WindKPH { get;  set; }
+        public int WindDegress { get;  set; }
+        public string WindDirection { get;  set; }
+        public double PressureMb { get;  set; }
+        public double PressureIn{ get;  set; }
+        public double PrecipMM { get;  set; }
+        public double PrecipIn { get;  set; }
+        public double Humidity { get;  set; }
+        public double Cloud{ get;  set; }
+        public double FellsLikeCelsius { get;  set; }
+        public double FellsLikeFahrenheit { get;  set; }
+        public double VisibilityKm { get;  set; }
+        public double VisibilityMiles { get;  set; }
+        public double UV { get;  set; }
+        public double GustMPH { get;  set; }
+        public double GustKPH { get;  set; }
+        public Condition Condition { get;  set; }
 
         public Weather(RealTimeWeatherDeserializer root)
         {
@@ -62,24 +62,20 @@ namespace WeatherAPI.Models
         {
 
         }
-        protected void UpdateWeather()
-        {
-
-        }
     }
 
     public class Condition
     {
-        public string Text { get; private set; }
-        public string Icon { get; private set; } // We could Use binary parser
-        public int Code { get; private set; }
+        public string Text { get;  set; }
+        public string Icon { get;  set; } // We could Use binary parser
+        public int Code { get;  set; }
         public Condition(WeatherAPI.Deserializer.Condition root)
         {
             Text = root.text;
             Icon = root.icon;
             Code = root.code;
         }
-        protected void UpdateCondition()
+        public Condition()
         {
 
         }

@@ -7,12 +7,12 @@ namespace WeatherAPI.Models
 {
     public class Astronomy
     {
-        public DateTime Sunrise { get; private set; }
-        public DateTime Sunset { get; private set; }
-        public DateTime Moonrise { get; private set; }
-        public DateTime Moonset { get; private set; }
-        public string MoonPhase{ get; private set; }
-        public double MoonIllumination { get; private set; }
+        public DateTime Sunrise { get;  set; }
+        public DateTime Sunset { get;  set; }
+        public DateTime Moonrise { get;  set; }
+        public DateTime Moonset { get;  set; }
+        public string MoonPhase{ get;  set; }
+        public double MoonIllumination { get;  set; }
         public Astronomy(AstronomyDeserializer root)
         {
             Sunrise = DateTime.Parse(root.astro.sunrise);

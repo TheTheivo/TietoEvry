@@ -129,42 +129,49 @@ namespace WeatherAPI
                     }
                 }
 
-                switch (selectedMethod)
+                try 
                 {
-                    case (1):
-                        taskData = WeatherApi.GetRealTimeWeather(selectedCity);
-                        break;
-                    case (2):
-                        taskData = WeatherApi.GetAstronomy(selectedCity);
-                        break;
-                    case (3):
-                        taskData = WeatherApi.GetTimeZone(selectedCity);
-                        break;
-                    case (4):
-                        Console.WriteLine("Select how many days for forecast.");
-                        Console.WriteLine("To exit an app type \"Exit\".");
-                        isInInputLoop = true;
-                        uint days = 1;
-                        while (isInInputLoop)
-                        {
-                            input = UI.InputHandler.ReadLine();
+                    switch (selectedMethod)
+                    {
+                        case (1):
+                            taskData = WeatherApi.GetRealTimeWeather(selectedCity);
+                            break;
+                        case (2):
+                            taskData = WeatherApi.GetAstronomy(selectedCity);
+                            break;
+                        case (3):
+                            taskData = WeatherApi.GetTimeZone(selectedCity);
+                            break;
+                        case (4):
+                            Console.WriteLine("Select how many days for forecast.");
+                            Console.WriteLine("To exit an app type \"Exit\".");
+                            isInInputLoop = true;
+                            uint days = 1;
+                            while (isInInputLoop)
+                            {
+                                input = UI.InputHandler.ReadLine();
 
-                            try
-                            {
-                                uint.TryParse(input, out days);
-                                isInInputLoop = false;
+                                try
+                                {
+                                    uint.TryParse(input, out days);
+                                    isInInputLoop = false;
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("Select how many days for forecast.");
+                                    Console.WriteLine("To exit an app type \"Exit\".");
+                                }
                             }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Select how many days for forecast.");
-                                Console.WriteLine("To exit an app type \"Exit\".");
-                            }
-                        }
-                        taskData = WeatherApi.GetForecast(selectedCity);
-                        break;
+                            taskData = WeatherApi.GetForecast(selectedCity);
+                            break;
+                    }
+                    data = taskData.GetAwaiter().GetResult();
+                    WeatherIODataHelper.WriteWeatherDataToXML(data);
+                }catch(Exception e)
+                {
+                    Console.WriteLine($"Error: {e.Message}");
                 }
-                data = taskData.GetAwaiter().GetResult();
-                WeatherIODataHelper.WriteWeatherDataToXML(data);
+                
             }
         }
 
